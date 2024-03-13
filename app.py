@@ -15,6 +15,8 @@ SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 SLACK_SIGNING_SECRET = os.environ["SLACK_SIGNING_SECRET"]
 SLACK_BOT_USER_ID = os.environ["SLACK_BOT_USER_ID"]
 
+SERVER_PORT = os.environ["SERVER_PORT"]
+
 # Initialize the Slack app
 app = App(token=SLACK_BOT_TOKEN)
 
@@ -24,6 +26,7 @@ flask_app = Flask(__name__)
 handler = SlackRequestHandler(app)
 
 
+# get_bot_user_id()
 def get_bot_user_id():
     """
     Get the bot user ID using the Slack API.
@@ -64,14 +67,20 @@ def handle_mentions(body, say):
         body (dict): The event data received from Slack.
         say (callable): A function for sending a response to the channel.
     """
+   
+    # figure out body components
+    # introduce moderation? seems early
+    # how about a controller?
+    print(body)
+    
     text = body["event"]["text"]
 
     mention = f"<@{SLACK_BOT_USER_ID}>"
     text = text.replace(mention, "").strip()
 
-    say("Sure, I'll get right on that!")
-    # response = my_function(text)
-    response = draft_email(text)
+    say("Sure thing, I'll get right on that!")
+    response = my_function(text)
+    # response = draft_email(text)
     say(response)
 
 
@@ -89,4 +98,4 @@ def slack_events():
 
 # Run the Flask app
 if __name__ == "__main__":
-    flask_app.run()
+    flask_app.run(port=SERVER_PORT)
